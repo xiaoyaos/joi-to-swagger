@@ -7,6 +7,7 @@ Conversion library for transforming [Joi](http://npm.im/joi) schema objects into
 
 add Converts to `Joi.object().pattern(regex,Joi.any())`
 add Converts to `Joi.string().valid(["1","2"])`
+add Converts to `Joi.string().replace("a","1")`
 ```js
 // input
 joi.object().keys({

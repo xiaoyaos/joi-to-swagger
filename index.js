@@ -192,7 +192,9 @@ var parseAsType = {
 				swagger.maxLength = test.arg;
 			}
 		}
-
+		if(schema._inner && schema._inner.replacements){
+			swagger.replace = schema._inner.replacements;
+		}
 		var valids = schema._valids.values().filter((s) => typeof s === 'string');
 		if (get(schema, '_flags.allowOnly') && valids.length) {
 			swagger.enum = valids;
