@@ -6,8 +6,12 @@ joi-to-swagger
 Conversion library for transforming [Joi](http://npm.im/joi) schema objects into [Swagger](http://swagger.io) schema definitions.
 
 add Converts to `Joi.object().pattern(regex,Joi.any())`
+
 add Converts to `Joi.string().valid(["1","2"])`
+
 add Converts to `Joi.string().replace("a","1")`
+
+add Converts to `Joi.string().when("key",{is:true,then:Joi.required()})`  Support only string mode for the time being
 ```js
 // input
 joi.object().keys({

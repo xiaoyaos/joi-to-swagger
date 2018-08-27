@@ -192,8 +192,14 @@ var parseAsType = {
 				swagger.maxLength = test.arg;
 			}
 		}
+
 		if(schema._inner && schema._inner.replacements){
 			swagger.replace = schema._inner.replacements;
+		}
+
+		if(schema._inner && schema._inner.matches){
+			for(let p of schema._inner.matches){
+			}
 		}
 		var valids = schema._valids.values().filter((s) => typeof s === 'string');
 		if (get(schema, '_flags.allowOnly') && valids.length) {
@@ -246,6 +252,7 @@ var parseAsType = {
 		return { type: 'boolean' };
 	},
 	alternatives: (schema, existingComponents, newComponentsByRef) => {
+
 		var index = meta(schema, 'swaggerIndex') || 0;
 
 		var matches = get(schema, [ '_inner', 'matches' ]);
@@ -267,6 +274,17 @@ var parseAsType = {
 
 		merge(newComponentsByRef, items.components || {});
 
+		let when = [];
+		for(let p of schema._inner.matches){
+			let	tmp = {
+					key : p.ref.key,
+					is : p.is._valids._set,
+					then : p.then._flags.presence
+				}
+			when.push(tmp)
+		}
+
+		items.swagger.when = when;
 		return items.swagger;
 	},
 	array: (schema, existingComponents, newComponentsByRef) => {
