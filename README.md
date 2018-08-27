@@ -6,12 +6,12 @@ joi-to-swagger
 Conversion library for transforming [Joi](http://npm.im/joi) schema objects into [Swagger](http://swagger.io) schema definitions.
 
 add Converts to `Joi.object().pattern(regex,Joi.any())`
-
+add Converts to `Joi.string().valid(["1","2"])`
 ```js
 // input
 joi.object().keys({
   id:      joi.number().integer().positive().required(),
-  name:    joi.string(),
+  name:    joi.string().valid(["zxc","qwe"]),
   email:   joi.string().email().required(),
   created: joi.date().allow(null),
   active:  joi.boolean().default(true),
@@ -29,7 +29,8 @@ joi.object().keys({
       "minimum": 1
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "enum": ["zxc","qwe"]
     },
     "email": {
       "type": "string",
