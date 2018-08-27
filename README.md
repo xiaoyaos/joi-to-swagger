@@ -5,6 +5,8 @@ joi-to-swagger
 
 Conversion library for transforming [Joi](http://npm.im/joi) schema objects into [Swagger](http://swagger.io) schema definitions.
 
+add Converts to `Joi.object().pattern(regex,Joi.any())`
+
 ```js
 // input
 joi.object().keys({

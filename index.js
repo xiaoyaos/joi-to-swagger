@@ -81,6 +81,19 @@ module.exports = exports = function parse (schema, existingComponents) {
 };
 
 var parseAsType = {
+	pattern: (schema) => {
+		let patterns = schema._inner.patterns[0];
+		var swagger = {
+			pattern:{
+				regex : patterns.regex,
+				swagger : patterns.rule._type == 'any' ? { type:patterns.rule._type }:parseAsType[patterns.rule._type](patterns.rule)
+			},
+			type:'pattern'
+		};
+		// console.log(patterns.regex.toString());
+		return swagger;
+	},
+
 	number: (schema) => {
 		var swagger = {};
 
@@ -294,7 +307,12 @@ var parseAsType = {
 		return swagger;
 	},
 	object: (schema, existingComponents, newComponentsByRef) => {
+		//************************xiaoyao
+		if(schema._inner.patterns && schema._inner.patterns.length > 0){
+			return parseAsType['pattern'](schema);
 
+		}
+		//************************xiaoyao
 		var requireds = [];
 		var properties = {};
 
