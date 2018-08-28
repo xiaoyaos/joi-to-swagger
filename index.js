@@ -198,10 +198,13 @@ var parseAsType = {
 
 		if(schema._inner && schema._inner.replacements){
 			for(let p of schema._inner.replacements){
-				p.pattern = p.pattern.toString();
-				p.pattern = p.pattern.slice(1);
-				p.pattern = p.pattern.substring(0,p.pattern.length-2);
+				if(typeof p.pattern === "object"){
+					p.pattern = p.pattern.toString();
+					p.pattern = p.pattern.substring(1);
+					p.pattern = p.pattern.substring(0,p.pattern.length-2);
+				}
 			}
+
 			swagger.replace = schema._inner.replacements;
 		}
 
