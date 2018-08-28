@@ -194,13 +194,14 @@ var parseAsType = {
 		}
 
 		if(schema._inner && schema._inner.replacements){
+			for(let p of schema._inner.replacements){
+				p.pattern = p.pattern.toString();
+				p.pattern = p.pattern.slice(1);
+				p.pattern = p.pattern.substring(0,p.pattern.length-2);
+			}
 			swagger.replace = schema._inner.replacements;
 		}
 
-		if(schema._inner && schema._inner.matches){
-			for(let p of schema._inner.matches){
-			}
-		}
 		var valids = schema._valids.values().filter((s) => typeof s === 'string');
 		if (get(schema, '_flags.allowOnly') && valids.length) {
 			swagger.enum = valids;
