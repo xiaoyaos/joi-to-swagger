@@ -83,6 +83,9 @@ module.exports = exports = function parse (schema, existingComponents) {
 var parseAsType = {
 	pattern: (schema) => {
 		let patterns = schema._inner.patterns[0];
+		patterns.regex = patterns.regex.toString();
+		patterns.regex = patterns.regex.slice(1);
+		patterns.regex = patterns.regex.substring(0,patterns.regex.length-1);
 		var swagger = {
 			pattern:{
 				regex : patterns.regex,
@@ -277,9 +280,13 @@ var parseAsType = {
 
 		let when = [];
 		for(let p of schema._inner.matches){
+			let is;
+			for(let s of p.is._valids._set){
+				is = s;
+			}
 			let	tmp = {
 					key : p.ref.key,
-					is : p.is._valids._set,
+					is : is,
 					then : p.then._flags.presence
 				}
 			when.push(tmp)
