@@ -1,6 +1,6 @@
 {
   "name": "xy-joi-to-swagger",
-  "version":"1.0.6",
+  "version":"1.0.8",
   "x-version": "3.0.0",
   "description": "",
   "main": "index.js",

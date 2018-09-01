@@ -79,24 +79,20 @@ module.exports = exports = function parse (schema, existingComponents) {
 
 	return { swagger, components };
 };
+function pattern(schema) {
+	let patterns = schema._inner.patterns[0];
+	patterns.regex = patterns.regex.toString();
+	patterns.regex = patterns.regex.slice(1);
+	patterns.regex = patterns.regex.substring(0,patterns.regex.length-1);
+	var pattern = {
+		regex : patterns.regex,
+		swagger : patterns.rule._type == 'any' ? { type:patterns.rule._type }:parseAsType[patterns.rule._type](patterns.rule)
+	}
+	// console.log(patterns.regex.toString());
+	return pattern;
+}
 
 var parseAsType = {
-	pattern: (schema) => {
-		let patterns = schema._inner.patterns[0];
-		patterns.regex = patterns.regex.toString();
-		patterns.regex = patterns.regex.slice(1);
-		patterns.regex = patterns.regex.substring(0,patterns.regex.length-1);
-		var swagger = {
-			pattern:{
-				regex : patterns.regex,
-				swagger : patterns.rule._type == 'any' ? { type:patterns.rule._type }:parseAsType[patterns.rule._type](patterns.rule)
-			},
-			type:'pattern'
-		};
-		// console.log(patterns.regex.toString());
-		return swagger;
-	},
-
 	number: (schema) => {
 		var swagger = {};
 
@@ -252,11 +248,18 @@ var parseAsType = {
 		return { type: 'string', format: 'date-time' };
 	},
 	boolean: (schema) => {
-
+		var swagger = { type: 'boolean' };
 		if (get(schema, '_flags.presence') === 'forbidden') {
 			return false;
 		}
-		return { type: 'boolean' };
+
+		if(schema._inner && schema._inner.truthySet){
+			swagger.truthy = Array.from(schema._inner.truthySet._set);
+		}
+		if(schema._inner && schema._inner.falsySet){
+			swagger.falsy = Array.from(schema._inner.falsySet._set);
+		}
+		return swagger;
 	},
 	alternatives: (schema, existingComponents, newComponentsByRef) => {
 
@@ -338,12 +341,7 @@ var parseAsType = {
 		return swagger;
 	},
 	object: (schema, existingComponents, newComponentsByRef) => {
-		//************************xiaoyao
-		if(schema._inner.patterns && schema._inner.patterns.length > 0){
-			return parseAsType['pattern'](schema);
 
-		}
-		//************************xiaoyao
 		var requireds = [];
 		var properties = {};
 
@@ -378,6 +376,11 @@ var parseAsType = {
 			swagger.additionalProperties = false;
 		}
 
+		//************************xiaoyao
+		if(schema._inner.patterns && schema._inner.patterns.length > 0){
+			swagger.pattern = pattern(schema);
+		}
+		//************************xiaoyao
 		return swagger;
 	},
 };
