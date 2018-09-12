@@ -11,7 +11,7 @@ add Converts to `Joi.string().valid(["1","2"])`
 
 add Converts to `Joi.string().replace("a","1")`
 
-add Converts to `Joi.string().when("key",{is:true,then:Joi.required()})`  Support only string mode for the time being
+add Converts to `Joi.string().when("key",{is:true,then:Joi.required()})`  Support only string and object mode for the time being
 
 add Converts to `Joi.boolean().truthy(['Y',1]).falsy(['n',0]).replace("a","1")`
 

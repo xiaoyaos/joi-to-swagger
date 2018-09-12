@@ -310,7 +310,7 @@ var parseAsType = {
 	array: (schema, existingComponents, newComponentsByRef) => {
 		var items = [];
 		let len = schema._inner.items.length;
-		for(let index = 0; index <= len-1; index++){console.log(index);
+		for(let index = 0; index <= len-1; index++){
 			var itemsSchema = get(schema, [ '_inner', 'items', index ]);
 
 			if (!itemsSchema) throw Error('Array schema does not define an items schema at index ' + index);
@@ -369,8 +369,10 @@ var parseAsType = {
 
 			properties[key] = prop.swagger;
 
-			if (get(child, 'schema._flags.presence') === 'required' || prop.swagger.__required) {
+			if ((get(child, 'schema._flags.presence') === 'required' || prop.swagger.__required ) && prop.when) {
 				requireds.push(key);
+				delete prop.swagger.__required;
+			}else{
 				delete prop.swagger.__required;
 			}
 		});
