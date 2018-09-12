@@ -93,6 +93,12 @@ function pattern(schema) {
 }
 
 var parseAsType = {
+	lazy: (schema) => {
+		var swagger = {};
+		swagger.type = 'lazy';
+		swagger.fun = schema._flags.lazy.toString();
+		return swagger
+	},
 	number: (schema) => {
 		var swagger = {};
 
@@ -302,16 +308,19 @@ var parseAsType = {
 		return items.swagger;
 	},
 	array: (schema, existingComponents, newComponentsByRef) => {
-		var index = meta(schema, 'swaggerIndex') || 0;
-		var itemsSchema = get(schema, [ '_inner', 'items', index ]);
+		var items = [];
+		let len = schema._inner.items.length;
+		for(let index = 0; index <= len-1; index++){console.log(index);
+			var itemsSchema = get(schema, [ '_inner', 'items', index ]);
 
-		if (!itemsSchema) throw Error('Array schema does not define an items schema at index ' + index);
+			if (!itemsSchema) throw Error('Array schema does not define an items schema at index ' + index);
 
-		if (get(itemsSchema, '_flags.presence') === 'forbidden') {
-			return false;
+			if (get(itemsSchema, '_flags.presence') === 'forbidden') {
+				return false;
+			}
+
+			items.push(exports(itemsSchema, merge({}, existingComponents || {}, newComponentsByRef || {})).swagger);
 		}
-
-		var items = exports(itemsSchema, merge({}, existingComponents || {}, newComponentsByRef || {}));
 
 		merge(newComponentsByRef, items.components || {});
 
@@ -337,7 +346,7 @@ var parseAsType = {
 			swagger.uniqueItems = true;
 		}
 
-		swagger.items = items.swagger;
+		swagger.items = items;
 		return swagger;
 	},
 	object: (schema, existingComponents, newComponentsByRef) => {
