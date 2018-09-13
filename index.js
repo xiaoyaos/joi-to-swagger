@@ -82,8 +82,10 @@ module.exports = exports = function parse (schema, existingComponents) {
 function pattern(schema) {
 	let patterns = schema._inner.patterns[0];
 	patterns.regex = patterns.regex.toString();
-	patterns.regex = patterns.regex.slice(1);
-	patterns.regex = patterns.regex.substring(0,patterns.regex.length-1);
+	if(patterns.regex[0] === "/" && patterns.regex[patterns.regex.length-1] === "/"){
+		patterns.regex = patterns.regex.slice(1);
+		patterns.regex = patterns.regex.substring(0,patterns.regex.length-1);
+	}
 	var pattern = {
 		regex : patterns.regex,
 		swagger : patterns.rule._type == 'any' ? { type:patterns.rule._type }:parseAsType[patterns.rule._type](patterns.rule)
@@ -131,7 +133,7 @@ var parseAsType = {
 			swagger.maximum = max.arg;
 		}
 
-		var valids = schema._valids.values().filter((s) => typeof s === 'number');
+		var valids = schema._valids.values();
 		if (get(schema, '_flags.allowOnly') && valids.length) {
 			swagger.enum = valids;
 		}
@@ -210,7 +212,7 @@ var parseAsType = {
 			swagger.replace = schema._inner.replacements;
 		}
 
-		var valids = schema._valids.values().filter((s) => typeof s === 'string');
+		var valids = schema._valids.values();
 		if (get(schema, '_flags.allowOnly') && valids.length) {
 			swagger.enum = valids;
 		}
