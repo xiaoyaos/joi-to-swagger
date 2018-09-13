@@ -95,12 +95,6 @@ function pattern(schema) {
 }
 
 var parseAsType = {
-	lazy: (schema) => {
-		var swagger = {};
-		swagger.type = 'lazy';
-		swagger.fun = schema._flags.lazy.toString();
-		return swagger
-	},
 	number: (schema) => {
 		var swagger = {};
 
